@@ -100,7 +100,7 @@ st.set_page_config(layout="wide")
 col1, col2, col3 = st.columns([1, 6, 1])
 
 with col1:
-    st.image("C:/Users/Pablo/Documents/Python/logo.png", width=100)  # Adjust width as needed
+    st.image("assets/logo.png", width=100)  # Adjust width as needed
 
 with col2:
     st.markdown("<h1 style='text-align: center;'>Sentiment Analysis</h1>", unsafe_allow_html=True)
