@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from scipy.special import softmax
+from torch.nn.functional import softmax
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import plotly.graph_objs as go
@@ -17,7 +17,7 @@ def analyze_sentiment_roberta(text):
     encoded_input = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
     output = model(**encoded_input)
     scores = output[0][0].detach().numpy()
-    scores = softmax(scores)
+    scores = softmax(torch.tensor(scores)).numpy()
     
     sentiment_dict = {
         'negative': scores[0],
