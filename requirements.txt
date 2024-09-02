@@ -1,8 +1,6 @@
 torch==2.2.2
 transformers==4.39.3
 pandas==2.2.0
-numpy==1.25.2
 matplotlib==3.8.0
 wordCloud==1.9.3
 plotly==5.17.0
-numpy==1.26.0
