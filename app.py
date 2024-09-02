@@ -7,10 +7,16 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import plotly.graph_objs as go
 
-# Load the RoBERTa model and tokenizer
-MODEL = "cardiffnlp/twitter-roberta-base-sentiment"
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+# Cache the loading of the RoBERTa model and tokenizer
+@st.cache_resource
+def load_model_and_tokenizer():
+    MODEL = "cardiffnlp/twitter-roberta-base-sentiment"
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    return tokenizer, model
+
+# Load the model and tokenizer once
+tokenizer, model = load_model_and_tokenizer()
 
 # Function to perform sentiment analysis with RoBERTa
 def analyze_sentiment_roberta(text):
@@ -159,5 +165,6 @@ with tab2:
     if manual_text_roberta:
         roberta_result = analyze_sentiment_roberta(manual_text_roberta)
         st.write("RoBERTa Sentiment Scores:", roberta_result)
+
 
 
