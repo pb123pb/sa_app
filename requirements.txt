@@ -1,3 +1,4 @@
+streamlit
 torch==2.2.2
 transformers==4.39.3
 pandas==2.2.0
