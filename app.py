@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import plotly.graph_objs as go
 
+# Set Streamlit app layout to wide
+st.set_page_config(layout="wide")
+
 # Cache the loading of the RoBERTa model and tokenizer
 @st.cache_resource
 def load_model_and_tokenizer():
@@ -98,9 +101,6 @@ def create_sentiment_distribution_chart(df):
         margin=dict(t=60)
     )
     return fig
-
-# Set Streamlit app layout to wide
-st.set_page_config(layout="wide")
 
 # Create three columns for layout
 col1, col2, col3 = st.columns([1, 6, 1])
