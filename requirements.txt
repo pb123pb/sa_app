@@ -5,3 +5,4 @@ pandas==2.2.0
 matplotlib==3.8.0
 wordCloud==1.9.3
 plotly==5.17.0
+sentencepiece
