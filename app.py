@@ -10,7 +10,7 @@ import plotly.graph_objs as go
 # Set Streamlit app layout to wide
 st.set_page_config(layout="wide")
 
-# Cache the loading of the XLM-RoBERTa model and tokenizer
+# Cache the loading of the model and tokenizer
 @st.cache_resource
 def load_model_and_tokenizer():
     MODEL = "cardiffnlp/twitter-xlm-roberta-base-sentiment"  # Multilingual model
