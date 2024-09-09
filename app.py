@@ -10,10 +10,10 @@ import plotly.graph_objs as go
 # Set Streamlit app layout to wide
 st.set_page_config(layout="wide")
 
-# Cache the loading of the RoBERTa model and tokenizer
+# Cache the loading of the XLM-RoBERTa model and tokenizer
 @st.cache_resource
 def load_model_and_tokenizer():
-    MODEL = "cardiffnlp/twitter-roberta-base-sentiment"
+    MODEL = "cardiffnlp/twitter-xlm-roberta-base-sentiment"  # Multilingual model
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL)
     return tokenizer, model
@@ -21,8 +21,8 @@ def load_model_and_tokenizer():
 # Load the model and tokenizer once
 tokenizer, model = load_model_and_tokenizer()
 
-# Function to perform sentiment analysis with RoBERTa
-def analyze_sentiment_roberta(text):
+# Function to perform sentiment analysis
+def analyze_sentiment(text):
     encoded_input = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
     output = model(**encoded_input)
     scores = output[0][0].detach().numpy()
@@ -111,29 +111,29 @@ with col1:
 with col2:
     st.markdown("<h1 style='text-align: center;'>Sentiment Analysis</h1>", unsafe_allow_html=True)
 
-# Create tabs for RoBERTa Sentiment Analysis and Manual Sentiment Analysis
-tab1, tab2 = st.tabs(["RoBERTa Sentiment Analysis", "Manual Sentiment Analysis"])
+# Create tabs for Sentiment Analysis
+tab1, tab2 = st.tabs(["Sentiment Analysis", "Manual Sentiment Analysis"])
 
-# RoBERTa Tab
+# Sentiment Analysis Tab
 with tab1:
-    st.header("RoBERTa Sentiment Analysis")
+    st.header("Sentiment Analysis")
     
     with st.sidebar.expander("Upload and Select Data", expanded=True):
-        uploaded_file_roberta = st.file_uploader('Upload a CSV file', type=['csv'], key="roberta_uploader")
+        uploaded_file = st.file_uploader('Upload a CSV file', type=['csv'], key="uploader")
 
-        if uploaded_file_roberta is not None:
-            df = pd.read_csv(uploaded_file_roberta)
-            text_column = st.selectbox('Select the text column for analysis:', df.columns, key="roberta_text_column")
+        if uploaded_file is not None:
+            df = pd.read_csv(uploaded_file)
+            text_column = st.selectbox('Select the text column for analysis:', df.columns, key="text_column")
 
             if text_column:
-                df['Sentiment'] = df[text_column].apply(lambda x: analyze_sentiment_roberta(str(x)))
+                df['Sentiment'] = df[text_column].apply(lambda x: analyze_sentiment(str(x)))
                 sentiment_df = pd.json_normalize(df['Sentiment'])
                 df = pd.concat([df.drop(columns=['Sentiment']), sentiment_df], axis=1)
                 df['Sentiment Category'] = df['compound'].apply(lambda x: 'Positive' if x > 0.1 else 'Neutral' if x >= -0.1 else 'Negative')
                 
                 st.success("Analysis completed! Scroll down to see the results.")
 
-    if uploaded_file_roberta is not None and text_column:
+    if uploaded_file is not None and text_column:
         col1, col2 = st.columns(2)
         
         with col1:
@@ -160,11 +160,7 @@ with tab1:
 with tab2:
     st.header("Manual Sentiment Analysis")
     
-    st.subheader("RoBERTa Sentiment Analysis")
-    manual_text_roberta = st.text_area("Enter text for RoBERTa sentiment analysis:", key="roberta_manual_text")
-    if manual_text_roberta:
-        roberta_result = analyze_sentiment_roberta(manual_text_roberta)
-        st.write("RoBERTa Sentiment Scores:", roberta_result)
-
-
-
+    manual_text = st.text_area("Enter text for sentiment analysis:", key="manual_text")
+    if manual_text:
+        result = analyze_sentiment(manual_text)
+        st.write("Sentiment Scores:", result)
